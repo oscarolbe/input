@@ -24,6 +24,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $inputFactory = new Factory();
         $inputFactory->setHandlerNamespace('Linio\Component\Input');
         $inputFactory->setTypeHandler($typeHandlerMock);
+        $inputFactory->setEnabled(true);
 
         $inputHandler = $inputFactory->getHandler('example');
         $this->assertInstanceOf('\Linio\Component\Input\ExampleHandler', $inputHandler);
@@ -41,7 +42,23 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $inputFactory = new Factory();
         $inputFactory->setHandlerNamespace('This\Does\Not\Exists');
         $inputFactory->setTypeHandler($typeHandlerMock);
+        $inputFactory->setEnabled(true);
 
         $inputHandler = $inputFactory->getHandler('simple');
+    }
+
+    public function testDisable()
+    {
+        $typeHandlerMock = $this->getMockBuilder('Linio\Component\Input\TypeHandler')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $inputFactory = new Factory();
+        $inputFactory->setHandlerNamespace('Linio\Component\Input');
+        $inputFactory->setTypeHandler($typeHandlerMock);
+        $inputFactory->setEnabled(false);
+
+        $inputHandler = $inputFactory->getHandler('example');
+        $this->assertInstanceOf('\Linio\Component\Input\Handler\DummyHandler', $inputHandler);
     }
 }

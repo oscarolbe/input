@@ -3,6 +3,7 @@
 namespace Linio\Component\Input;
 
 use Doctrine\Common\Inflector\Inflector;
+use Linio\Component\Input\Handler\DummyHandler;
 
 class Factory
 {
@@ -12,12 +13,21 @@ class Factory
     protected $handlerNamespace;
 
     /**
+     * @var bool
+     */
+    protected $enabled;
+
+    /**
      * @var \Linio\Component\Input\TypeHandler
      */
     protected $typeHandler;
 
     public function getHandler($alias)
     {
+        if (!$this->enabled) {
+            return new DummyHandler($this->typeHandler);
+        }
+
         $className = Inflector::classify($alias);
         $handlerClass = sprintf('\%s\%sHandler', $this->handlerNamespace, $className);
 
@@ -60,6 +70,16 @@ class Factory
     public function setTypeHandler($typeHandler)
     {
         $this->typeHandler = $typeHandler;
+
+        return $this;
+    }
+
+    /**
+     * @param bool
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
 
         return $this;
     }
