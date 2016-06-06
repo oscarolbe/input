@@ -70,9 +70,9 @@ abstract class AbstractHandler
         $this->root->remove($key);
     }
 
-    public function bind(Request $request)
+    public function bind($input)
     {
-        $this->response = $this->walk($this->root, $request->request->all());
+        $this->response = $this->walk($this->root, $input);
     }
 
     /**

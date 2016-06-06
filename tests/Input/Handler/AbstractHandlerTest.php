@@ -141,10 +141,10 @@ class AbstractRequestTest extends \PHPUnit_Framework_TestCase
 {
     public function testIsBindingRequest()
     {
-        $request = $this->getValidRequest();
+        $inputArray = $this->getValidInput();
         $input = $this->getInputHandler();
-        $input->bind($request);
-        $this->assertTrue($input->isValid(), 'The request object is not valid: ' . $input->getErrorsAsString());
+        $input->bind($inputArray);
+        $this->assertTrue($input->isValid(), 'The input object is not valid: ' . $input->getErrorsAsString());
 
         $data = $input->getData();
         $this->assertEquals('Herval', $data['name']);
@@ -179,16 +179,16 @@ class AbstractRequestTest extends \PHPUnit_Framework_TestCase
 
     public function testIsGettingSpecificDataByKey()
     {
-        $request = $this->getValidRequest();
+        $inputArray = $this->getValidInput();
         $input = $this->getInputHandler();
-        $input->bind($request);
+        $input->bind($inputArray);
         $data = $input->getData();
         $this->assertEquals('Herval', $input->getData('name'));
     }
 
     public function testIsValidatingParameters()
     {
-        $request = new Request([], [
+        $inputArray = [
             'name' => null,
             'stuff' => [
                 'foo' => 'bar',
@@ -212,10 +212,10 @@ class AbstractRequestTest extends \PHPUnit_Framework_TestCase
                     ]
                 ],
             ]
-        ]);
+        ];
 
         $input = $this->getInputHandler();
-        $input->bind($request);
+        $input->bind($inputArray);
         $this->assertFalse($input->isValid());
 
         $errors = $input->getErrors();
@@ -230,21 +230,21 @@ class AbstractRequestTest extends \PHPUnit_Framework_TestCase
      */
     public function testIsThrowingExceptionWhenGettingInvalidData()
     {
-        $request = new Request([], [
+        $inputArray = [
             'name' => null,
             'stuff' => [
                 'foo' => 'bar',
             ],
-        ]);
+        ];
 
         $input = $this->getInputHandler();
-        $input->bind($request);
+        $input->bind($inputArray);
         $input->getData();
     }
 
     public function testIsCheckingConstraints()
     {
-        $request = new Request([], [
+        $inputArray = [
             'name' => null,
             'stuff' => [
                 'foo' => 'bar',
@@ -269,10 +269,10 @@ class AbstractRequestTest extends \PHPUnit_Framework_TestCase
                     ]
                 ],
             ]
-        ]);
+        ];
 
         $input = $this->getInputHandler();
-        $input->bind($request);
+        $input->bind($inputArray);
         $this->assertFalse($input->isValid());
 
         $errors = $input->getErrors();
@@ -282,9 +282,9 @@ class AbstractRequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('"is_primary" should be of type boolean, string received.', $errors[2]);
     }
 
-    protected function getValidRequest()
+    protected function getValidInput()
     {
-        return new Request([], [
+        return [
             'name' => 'Herval',
             'date' => '2014-01-01 00:00:01',
             'stuff' => [
@@ -312,7 +312,7 @@ class AbstractRequestTest extends \PHPUnit_Framework_TestCase
                     ]
                 ],
             ]
-        ]);
+        ];
     }
 
     protected function getInputHandler()
