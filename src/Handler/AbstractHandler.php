@@ -60,9 +60,9 @@ abstract class AbstractHandler
     /**
      * @param bool $valid
      */
-    public function validateExtraParameters($key, $type = 'string', $options = [])
+    public function validateExtraParameters($valid)
     {
-        return $this->root->add($key, $type, $options);
+        return $this->validExtraParameters = $valid;
     }
 
     /**
