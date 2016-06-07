@@ -21,6 +21,11 @@ abstract class AbstractHandler
     /**
      * @var array
      */
+    protected $validExtraParameters = true;
+
+    /**
+     * @var array
+     */
     protected $response = [];
 
     /**
@@ -50,6 +55,14 @@ abstract class AbstractHandler
         }
 
         return $this->response;
+    }
+
+    /**
+     * @param bool $valid
+     */
+    public function validateExtraParameters($key, $type = 'string', $options = [])
+    {
+        return $this->root->add($key, $type, $options);
     }
 
     /**
@@ -102,6 +115,7 @@ abstract class AbstractHandler
     protected function walk($node, $requestData, $parent = null)
     {
         $response = [];
+        $extraParameters = $requestData;
 
         /*
          * TODO
@@ -114,6 +128,8 @@ abstract class AbstractHandler
          * this loop!
          */
         foreach ($node as $key => $item) {
+            unset($extraParameters[$key]);
+
             if (!isset($requestData[$key])) {
                 if ($item->isRequired()) {
                     $this->errors[] = sprintf('"%s" is required', $key);
@@ -202,6 +218,14 @@ abstract class AbstractHandler
             } else {
                 $response[$key] = $value;
             }
+        }
+
+        if (!$this->validExtraParameters) {
+            return $response;
+        }
+
+        foreach ($extraParameters as $key => $value) {
+            $this->errors[] = sprintf('"%s" is not required', $key);
         }
 
         return $response;
