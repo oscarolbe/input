@@ -8,4 +8,12 @@ class DummyHandler extends AbstractHandler
     {
         
     }
+
+    /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        return true;
+    }
 }
